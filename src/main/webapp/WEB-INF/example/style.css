@@ -1,0 +1,13 @@
+@charset "ISO-8859-1";
+body {
+	align : center;
+}
+h2 {
+	align : center;
+	text-align : center;
+}
+.title {
+	align : center;
+	text-align : center;
+	color: blue;
+}
