@@ -3,7 +3,7 @@ package clinic.finance.beans;
 public enum accountEnum {
 
 	//FIRSTDIRECT, CATERALLEN, TANDEM
-	VIRGIN(1, 19362.64, accountTypeEnum.ISA.toString(), "Virgin S&S", 0, "virgin.login.", "loginUri", "virginMoneyHTML", new String [] {"user", "pin"},"Error 404", false, false);
+	VIRGIN(1, 19362.64, 3, accountTypeEnum.ISA.toString(), "Virgin S&S", 0, "virgin.login.", "loginUri", "virginMoneyHTML", new String [] {"user", "pin"},"Error 404", false, false);
 	/**
 	,CATERALLEN(3, 10.0, accountTypeEnum.BUSINESS.toString(), "CaterAllen", 0, "callen.login.", "loginUri", "callenHTML", new String [] {"user"}, "Error 404", true, true);
 	//Welcome to Cater Allen Private Bank
@@ -20,7 +20,10 @@ public enum accountEnum {
 	private boolean multiPartLogin;
 	private boolean popups;
 	
-	accountEnum(int accId, double balance, String type, String name, int interest, String propsPrefix, String loginUriProp, String mockPageName, String [] formFields, String summaryScreenTitle, boolean multiPartLogin, boolean popups){
+	accountEnum(int accId, double balance, int accType, String name, String accTypeName, 
+					int interest, String propsPrefix, String loginUriProp, String mockPageName, 
+						String [] formFields, String summaryScreenTitle, boolean multiPartLogin, boolean popups){
+		
 		this.loginUriProp = loginUriProp;
 		this.propsPrefix = propsPrefix;
 		this.summaryScreenTitle = summaryScreenTitle;
@@ -29,7 +32,9 @@ public enum accountEnum {
 		this.multiPartLogin = multiPartLogin;
 		this.popups = popups;
 		
-		new BankAccount(accId, balance, type, name, interest, propsPrefix, loginUriProp, mockPageName, summaryScreenTitle);
+		new BankAccount(accId, balance, accType, name, accTypeName,
+						interest, propsPrefix, loginUriProp, mockPageName, 
+							summaryScreenTitle);
 	}
 	public boolean hasPopups() {
 		return popups;

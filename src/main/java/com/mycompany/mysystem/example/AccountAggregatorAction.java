@@ -21,7 +21,15 @@ package com.mycompany.mysystem.example;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.StrutsStatics;
+import org.apache.struts2.dispatcher.SessionMap;
+
 import com.opensymphony.xwork2.ActionContext;
 import clinic.finance.beans.BankAccount;
 import clinic.finance.util.JDBCUtil;
@@ -36,8 +44,6 @@ public class AccountAggregatorAction extends ExampleSupport {
 	BigDecimal sumTotal;
 	BigDecimal accessibleTotal;
 
-	
-
 	final String JDBCPROPERTIESLOCATION = 
 			"C:/Users/domin/workspace/strutsFinanceApp/src/main/resources/jdbc.properties";
 			
@@ -49,11 +55,10 @@ public class AccountAggregatorAction extends ExampleSupport {
 			bankAccounts = jdbcUtil.runSelectStatement();
 			
 			if (bankAccounts!=null) {
-				
 				setBankAccounts(bankAccounts);
 				setSumTotal(bankAccounts);
 				setAccessibleTotal(bankAccounts);
-				System.out.println(getAccessibleTotal());
+				
 				ActionContext.getContext().getSession().put("bankAccounts", getBankAccounts());
 				ActionContext.getContext().getSession().put("sumTotal", getSumTotal());
 				ActionContext.getContext().getSession().put("accessibleTotal", getAccessibleTotal());

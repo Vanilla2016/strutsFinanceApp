@@ -7,10 +7,11 @@ import java.util.List;
 public class BankAccount {
 	
 	private int accountId = 0;
+	private int accountType = 0;
 	private double accountBalance = 0;
 	private int accountInterest = 0;
-	private String accountType = null;
 	private String accountName = null;
+	private String accountTypeName = null;
 	private String accountCol = null;
 	private String propsPrefix = null;
 	private String loginUri = null;
@@ -24,12 +25,12 @@ public class BankAccount {
 	 */
 	private List <String> updateFields  =  new ArrayList<String>();
 	
-	public BankAccount (int accountId, double accountBalance, String accountType,
-			String accountName , int accountInterest, String propsPrefix, String loginUri, 
+	public BankAccount (int accountId, double accountBalance, int accountType,
+			String accountName, String accountTypeName, int accountInterest, String propsPrefix, String loginUri, 
 											String mockPageName, String summaryScreenTitle) {
 		
 		this(accountId, accountBalance, accountType,
-				accountName , accountInterest, propsPrefix, loginUri);
+				accountName, accountTypeName, accountInterest, propsPrefix, loginUri);
 		
 		if (summaryScreenTitle != null) {
 			this.summaryScreenTitle = summaryScreenTitle;
@@ -41,11 +42,11 @@ public class BankAccount {
 		}
 	}
 
-		public BankAccount (int accountId, double accountBalance, String accountType,
-			String accountName , int accountInterest, String propsPrefix, String loginUri) {
+		public BankAccount (int accountId, double accountBalance, int accountType,
+			String accountName, String accountTypeName, int accountInterest, String propsPrefix, String loginUri) {
 		
 		this(accountId, accountBalance, accountType,
-				accountName , accountInterest);
+				accountName, accountTypeName, accountInterest);
 		
 		if (propsPrefix != null) {
 			this.propsPrefix = propsPrefix;
@@ -57,18 +58,22 @@ public class BankAccount {
 		}
 	}
 	
-	public BankAccount (int accountId, double accountBalance, String accountType,
-			String accountName , int accountInterest) {
+	public BankAccount (int accountId, double accountBalance, int accountType,
+			String accountName,  String accountTypeName, int accountInterest) {
 		
 		this(accountId, accountBalance);
 		
-		if (accountType != null) {
+		if (accountType > 0) {
 			this.accountType = accountType;
 			updateFields.add("accountType");
 		}
 		if (accountName != null) {
 			this.accountName = accountName;
 			updateFields.add("accountName");
+		}
+		if (accountTypeName != null) {
+			this.accountTypeName = accountTypeName;
+			updateFields.add("accountTypeName");
 		}
 		if (accountInterest > 0) {
 			this.accountInterest = accountInterest;
@@ -102,8 +107,11 @@ public class BankAccount {
 	public double getAccountBalance() {
 		return accountBalance;
 	}
-	public String getAccountType() {
+	public int getAccountType() {
 		return accountType;
+	}
+	public void setAccountType(int accountType) {
+		this.accountType = accountType;
 	}
 	public String getAccountName() {
 		return accountName;
@@ -128,5 +136,12 @@ public class BankAccount {
 	}
 	public String getSummaryScreenTitle() {
 		return summaryScreenTitle;
+	}
+	public String getAccountTypeName() {
+		return accountTypeName;
+	}
+
+	public void setAccountTypeName(String accountTypeName) {
+		this.accountTypeName = accountTypeName;
 	}
 }

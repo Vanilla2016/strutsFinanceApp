@@ -2,7 +2,7 @@ package clinic.finance.beans;
 
 public enum accountTypeEnum {
 	
-	CURRENT, BUSINESS, ISA, SAVING, STOCK, FUND;
+	BUSINESS, CURRENT, ISA, SAVING, STOCK, FUND, PENSION;
 	
 	private String type;
 	

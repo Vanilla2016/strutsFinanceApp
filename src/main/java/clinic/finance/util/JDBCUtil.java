@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -16,6 +17,7 @@ import org.apache.commons.dbutils.BeanProcessor;
 
 import clinic.finance.beans.BankAccount;
 import clinic.finance.beans.accountTypeEnum;
+import clinic.finance.comparators.BankAccountComparator;
 
 /*
  * Essential to use mysql-connector-java 8.0.11 jar.
@@ -95,31 +97,28 @@ public class JDBCUtil extends CommonFinanceUtil{
 	 *  
 	 */
 	public List<BankAccount> runSelectStatement() {
-		String query = "select idaccount, accountbalance, accounttype, " + 
-				"accountname, accountinterest from wds_fin.account";
+		
+		StringBuilder queryBuff = new StringBuilder("select acc.idaccount, acc.accountname, acc.accounttype, acc_t.accounttypename, "); 
+		queryBuff.append("acc.accountbalance, acc.accountinterest ");				
+		queryBuff.append("from wds_fin.account acc, wds_fin.accounttype acc_t ");				
+		queryBuff.append("WHERE acc.accounttype = acc_t.accounttype ");				
+		queryBuff.append("order by acc.accounttype asc");				
+						
 		ResultSet rs = null;
 		if (connected) {
 			try {
 			  Statement stmt = conn.createStatement();
-		      rs = stmt.executeQuery(query);
+		      rs = stmt.executeQuery(queryBuff.toString());
 		      //rs.beforeFirst();
 		      //BeanProcessor bp = new BeanProcessor();
 			  bankAccounts = new ArrayList<BankAccount>();
-				
 			  while (rs.next()) {
-				  if(rs.getString("accountType").equalsIgnoreCase("2")) {
-					  accountType = "Pension";  
-					  pensionTotal = new BigDecimal(rs.getString("accountBalance"));
-				  } else if(rs.getString("accountType").equalsIgnoreCase("3")) {
-					  accountType = "Current Account";
-				  } else if(rs.getString("accountType").equalsIgnoreCase("4")) {
-					  accountType = "Stock Account";
-				  } else if(rs.getString("accountType").equalsIgnoreCase("5")) {
-					  accountType = "Fund Account";
-				  }
+				  
 			  //bankAccounts.add((BankAccount)bp.toBean(rs, BankAccount.class));
-				  bankAccounts.add(new BankAccount(Integer.parseInt(rs.getString("idaccount")), Double.parseDouble(rs.getString("accountBalance")), 
-						  accountType, rs.getString("accountName"), Integer.parseInt(rs.getString("accountInterest"))));
+			  bankAccounts.add(new BankAccount(Integer.parseInt(rs.getString("idaccount")), Double.parseDouble(rs.getString("accountBalance")), 
+					  Integer.parseInt(rs.getString("accountType")), rs.getString("accountName"), rs.getString("accountTypeName"), Integer.parseInt(rs.getString("accountInterest"))));
+			  
+			  Collections.sort(bankAccounts, new BankAccountComparator());
 			}
 			  rs.close();
 		    } catch (SQLException e) {
@@ -134,7 +133,7 @@ public class JDBCUtil extends CommonFinanceUtil{
 		sumTotal = new BigDecimal(0.0);
 		if (bankAccounts!=null) {
 			for (BankAccount bankAccount : bankAccounts) {
-				if (!bankAccount.getAccountType().equalsIgnoreCase("Pension") || withPension) {
+				if (bankAccount.getAccountType() != 7|| withPension) {
 					sumTotal = sumTotal.add(new BigDecimal(bankAccount.getAccountBalance()));
 				}
 			}
