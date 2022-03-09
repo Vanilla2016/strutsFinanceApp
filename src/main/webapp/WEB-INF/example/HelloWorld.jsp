@@ -8,6 +8,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link rel="stylesheet" type="text/css" href="style.css">
+<script src='/cs/js/jquery/jquery-1.6.3.min.js' type='text/javascript'></script>
 <style>
 <!--
 
@@ -69,7 +70,6 @@ for (int i=0; i< bankAccounts.size(); i++){
 <%	
 	}
 %>
-
 <tr class="sumTotal">
 	<td>Sum Total</td><td><%=sumTotal%></td><td></td><td></td>
 </tr>
