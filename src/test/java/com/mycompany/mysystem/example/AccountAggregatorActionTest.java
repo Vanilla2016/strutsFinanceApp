@@ -22,9 +22,11 @@ package com.mycompany.mysystem.example;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import org.apache.struts2.StrutsTestCase;
+import org.junit.Ignore;
 
 public class AccountAggregatorActionTest extends StrutsTestCase {
-
+	
+	@Ignore
     public void testAccountAggregatorAction() throws Exception {
         AccountAggregatorAction accountAggregatorAction = container.inject(AccountAggregatorAction.class);
         ActionContext.getContext().getContainer().inject(accountAggregatorAction);
