@@ -12,7 +12,8 @@
         <default-action-ref name="AccountAggregatorAction" />
 
         <action name="AccountAggregatorAction" class="com.mycompany.mysystem.example.AccountAggregatorAction">
-            <result>/WEB-INF/example/HelloWorld.jsp</result>
+            <result name="success">/WEB-INF/example/HelloWorld.jsp</result>
+            <result name="error">/WEB-INF/example/errorPage.jsp</result>
         </action>
 
         <action name="Login_*" method="{1}" class="com.mycompany.mysystem.example.Login">

@@ -1,9 +1,11 @@
 package clinic.finance.beans;
 
+import java.math.BigDecimal;
+
 public enum accountEnum {
 
 	//FIRSTDIRECT, CATERALLEN, TANDEM
-	VIRGIN(1, 19362.64, 3, accountTypeEnum.ISA.toString(), "Virgin S&S", 0, "virgin.login.", "loginUri", "virginMoneyHTML", new String [] {"user", "pin"},"Error 404", false, false);
+	VIRGIN(1, new BigDecimal(19362.64), 3, accountTypeEnum.ISA.toString(), "Virgin S&S", 0, "virgin.login.", "loginUri", "virginMoneyHTML", new String [] {"user", "pin"},"Error 404", false, false);
 	/**
 	,CATERALLEN(3, 10.0, accountTypeEnum.BUSINESS.toString(), "CaterAllen", 0, "callen.login.", "loginUri", "callenHTML", new String [] {"user"}, "Error 404", true, true);
 	//Welcome to Cater Allen Private Bank
@@ -14,13 +16,13 @@ public enum accountEnum {
 	private String propsPrefix; 
 	private String summaryScreenTitle; 
 	private String PACTitle = "pacUri"; 
-	private double balance; 
+	private BigDecimal balance; 
 	private String [] formFields= null;
 	
 	private boolean multiPartLogin;
 	private boolean popups;
 	
-	accountEnum(int accId, double balance, int accType, String name, String accTypeName, 
+	accountEnum(int accId, BigDecimal balance, int accType, String name, String accTypeName, 
 					int interest, String propsPrefix, String loginUriProp, String mockPageName, 
 						String [] formFields, String summaryScreenTitle, boolean multiPartLogin, boolean popups){
 		
@@ -32,7 +34,7 @@ public enum accountEnum {
 		this.multiPartLogin = multiPartLogin;
 		this.popups = popups;
 		
-		new BankAccount(accId, balance, accType, name, accTypeName,
+		new Account(accId, balance, accType, name, accTypeName,
 						interest, propsPrefix, loginUriProp, mockPageName, 
 							summaryScreenTitle);
 	}
@@ -54,7 +56,7 @@ public enum accountEnum {
 	public String getSummaryScreenTitle() {
 		return summaryScreenTitle;
 	}
-	public double getBalance() {
+	public BigDecimal getBalance() {
 		return balance;
 	}
 	public String getPACTitle() {

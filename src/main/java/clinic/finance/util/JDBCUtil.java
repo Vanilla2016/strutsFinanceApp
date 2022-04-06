@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.dbutils.BeanProcessor;
 
-import clinic.finance.beans.BankAccount;
+import clinic.finance.beans.Account;
 import clinic.finance.beans.accountTypeEnum;
-import clinic.finance.comparators.BankAccountComparator;
+import clinic.finance.comparators.AccountComparator;
 
 /*
  * Essential to use mysql-connector-java 8.0.11 jar.
@@ -34,7 +34,7 @@ public class JDBCUtil extends CommonFinanceUtil{
 	
 	private Connection conn = null;
 	private boolean connected = false;
-	private List<BankAccount> bankAccounts;
+	private List<Account> bankAccounts;
 	private final String UPDATSTATPRE = "update wds_fin.account ";
 	private BigDecimal sumTotal;
 	private BigDecimal pensionTotal;
@@ -96,7 +96,7 @@ public class JDBCUtil extends CommonFinanceUtil{
 	 * constructor and so values aren't populated - research.
 	 *  
 	 */
-	public List<BankAccount> runSelectStatement() {
+	public List<Account> runSelectStatement() {
 		
 		StringBuilder queryBuff = new StringBuilder("select acc.idaccount, acc.accountname, acc.accounttype, acc_t.accounttypename, "); 
 		queryBuff.append("acc.accountbalance, acc.accountinterest ");				
@@ -111,14 +111,14 @@ public class JDBCUtil extends CommonFinanceUtil{
 		      rs = stmt.executeQuery(queryBuff.toString());
 		      //rs.beforeFirst();
 		      //BeanProcessor bp = new BeanProcessor();
-			  bankAccounts = new ArrayList<BankAccount>();
+			  bankAccounts = new ArrayList<Account>();
 			  while (rs.next()) {
 				  
 			  //bankAccounts.add((BankAccount)bp.toBean(rs, BankAccount.class));
-			  bankAccounts.add(new BankAccount(Integer.parseInt(rs.getString("idaccount")), Double.parseDouble(rs.getString("accountBalance")), 
+			  bankAccounts.add(new Account(Integer.parseInt(rs.getString("idaccount")), new BigDecimal(rs.getString("accountBalance")), 
 					  Integer.parseInt(rs.getString("accountType")), rs.getString("accountName"), rs.getString("accountTypeName"), Integer.parseInt(rs.getString("accountInterest"))));
 			  
-			  Collections.sort(bankAccounts, new BankAccountComparator());
+			  Collections.sort(bankAccounts, new AccountComparator());
 			}
 			  rs.close();
 		    } catch (SQLException e) {
@@ -128,13 +128,13 @@ public class JDBCUtil extends CommonFinanceUtil{
 		return bankAccounts;
 	}
 	
-	public BigDecimal calculateSumTotal(List<BankAccount> bankAccounts, boolean withPension) {
+	public BigDecimal calculateSumTotal(List<Account> bankAccounts, boolean withPension) {
 		
 		sumTotal = new BigDecimal(0.0);
 		if (bankAccounts!=null) {
-			for (BankAccount bankAccount : bankAccounts) {
+			for (Account bankAccount : bankAccounts) {
 				if (bankAccount.getAccountType() != 7|| withPension) {
-					sumTotal = sumTotal.add(new BigDecimal(bankAccount.getAccountBalance()));
+					sumTotal = sumTotal.add(bankAccount.getAccountBalance());
 				}
 			}
 		}
@@ -144,7 +144,7 @@ public class JDBCUtil extends CommonFinanceUtil{
 	/*
 	 * Update relevant value in DB table
 	 */
-	public int runAccountUpdateStatement(BankAccount account) {
+	public int runAccountUpdateStatement(Account account) {
 		
 		StringBuilder queryBuild = new StringBuilder(UPDATSTATPRE); 
 		List feildNames = account.getUpdateFields();

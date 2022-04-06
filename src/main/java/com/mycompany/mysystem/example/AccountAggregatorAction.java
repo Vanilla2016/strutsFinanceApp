@@ -21,17 +21,17 @@ package com.mycompany.mysystem.example;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import org.apache.struts2.StrutsStatics;
-import org.apache.struts2.dispatcher.SessionMap;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 import com.opensymphony.xwork2.ActionContext;
-import clinic.finance.beans.BankAccount;
+
+import clinic.finance.beans.Account;
 import clinic.finance.util.JDBCUtil;
 
 /** 
@@ -40,14 +40,19 @@ import clinic.finance.util.JDBCUtil;
 public class AccountAggregatorAction extends ExampleSupport {
 
 	JDBCUtil jdbcUtil;
-	List<BankAccount> bankAccounts;
+	List<Account> bankAccounts;
 	BigDecimal sumTotal;
 	BigDecimal accessibleTotal;
 
-	final String JDBCPROPERTIESLOCATION = 
+	private final String JDBCPROPERTIESLOCATION = 
 			"C:/Users/domin/workspace/strutsFinanceApp/src/main/resources/jdbc.properties";
 			
-    public String execute() {
+	private static SessionFactory sessionFactory;
+	
+	@SuppressWarnings("unchecked")
+	public String execute() {
+		String exec = SUCCESS;
+		
         setMessage(getText(MESSAGE));
         jdbcUtil = new JDBCUtil(JDBCPROPERTIESLOCATION);
     	try {
@@ -66,7 +71,42 @@ public class AccountAggregatorAction extends ExampleSupport {
 		} catch (ClassNotFoundException | SQLException | NoClassDefFoundError e) {//Why getting this NoClassDefFoundError?
 			e.printStackTrace();
 		}
-        return SUCCESS;
+		 
+    	/*
+        try {
+        	sessionFactory =  new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+        	System.err.println("Failed to create session factory object" +ex);
+        	throw new ExceptionInInitializerError(ex);
+        }
+        
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        
+        //System.out.println(""+session.connection());
+        
+        try {
+        	tx = session.beginTransaction();
+        	bankAccounts = session.createQuery("FROM account").list();
+        	if (bankAccounts!=null) {
+				setBankAccounts(bankAccounts);
+				//setSumTotal(bankAccounts);
+				//setAccessibleTotal(bankAccounts);
+				
+				ActionContext.getContext().getSession().put("bankAccounts", getBankAccounts());
+				//ActionContext.getContext().getSession().put("sumTotal", getSumTotal());
+				//ActionContext.getContext().getSession().put("accessibleTotal", getAccessibleTotal());
+			}
+        	tx.commit();
+        } catch (HibernateException e) {
+			if (tx!=null) tx.rollback();
+			e.printStackTrace();
+			exec = ERROR;
+		} finally {
+			session.close();
+		}
+        */
+        return exec;
     }
 
     /**
@@ -96,22 +136,22 @@ public class AccountAggregatorAction extends ExampleSupport {
     public void setMessage(String message) {
         this.message = message;
     }
-    public List<BankAccount> getBankAccounts() {
+    public List<Account> getBankAccounts() {
 		return bankAccounts;
 	}
-	public void setBankAccounts(List<BankAccount> bankAccounts) {
+	public void setBankAccounts(List<Account> bankAccounts) {
 		this.bankAccounts = bankAccounts;
 	}
 	public BigDecimal getSumTotal() {
 		return sumTotal;
 	}
-	public void setSumTotal(List<BankAccount> bankAccounts) {
-		sumTotal = jdbcUtil.calculateSumTotal(bankAccounts, true);
-	}
 	public BigDecimal getAccessibleTotal() {
 		return accessibleTotal;
 	}
-	public void setAccessibleTotal(List<BankAccount> bankAccounts) {
+	 public void setSumTotal(List<Account> bankAccounts) {
+		sumTotal = jdbcUtil.calculateSumTotal(bankAccounts, true);
+	}
+	public void setAccessibleTotal(List<Account> bankAccounts) {
 		accessibleTotal = jdbcUtil.calculateSumTotal(bankAccounts, false);
 	}
 }
